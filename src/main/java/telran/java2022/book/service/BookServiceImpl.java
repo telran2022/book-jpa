@@ -13,6 +13,7 @@ import telran.java2022.book.dao.BookRepository;
 import telran.java2022.book.dao.PublisherRepository;
 import telran.java2022.book.dto.AuthorDto;
 import telran.java2022.book.dto.BookDto;
+import telran.java2022.book.dto.exceptions.EntityNotFoundException;
 import telran.java2022.book.model.Author;
 import telran.java2022.book.model.Book;
 import telran.java2022.book.model.Publisher;
@@ -46,20 +47,24 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public BookDto findBookByIsbn(String isbn) {
-		// TODO Auto-generated method stub
-		return null;
+		Book book = bookRepository.findById(isbn).orElseThrow(() -> new EntityNotFoundException());
+		return modelMapper.map(book, BookDto.class);
 	}
 
 	@Override
+	@Transactional
 	public BookDto removeBook(String isbn) {
-		// TODO Auto-generated method stub
-		return null;
+		Book book = bookRepository.findById(isbn).orElseThrow(() -> new EntityNotFoundException());
+		bookRepository.deleteById(isbn);
+		return modelMapper.map(book, BookDto.class);
 	}
 
 	@Override
+	@Transactional
 	public BookDto updateBook(String isbn, String title) {
-		// TODO Auto-generated method stub
-		return null;
+		Book book = bookRepository.findById(isbn).orElseThrow(() -> new EntityNotFoundException());
+		book.setTitle(title);
+		return modelMapper.map(book, BookDto.class);
 	}
 
 	@Override
